@@ -24,6 +24,11 @@ for PY_VER in "${arrPY_VERSIONS[@]}"; do
         /opt/python/"${PY_VER}"/bin/pip install --no-cache-dir ${BUILD_REQUIREMENTS} || { echo "Installing requirements failed."; exit 1; }
     fi
 
+    echo "Building wheels in /github/workspace/${PACKAGE_PATH}"
+    ls /github/workspace
+    ls /github/workspace/${PACKAGE_PATH}
+
+
     # Build wheels
     /opt/python/"${PY_VER}"/bin/pip wheel /github/workspace/"${PACKAGE_PATH}" -w /github/workspace/wheelhouse/ ${PIP_WHEEL_ARGS} || { echo "Building wheels failed."; exit 1; }
 done
@@ -38,7 +43,7 @@ ls /github/workspace/wheelhouse
 
 
 # If an upload release asset url has been specificed, upload the assets
-if [ -z "${UPLOAD_RELEASE_ASSET_URL}" ]
+if [ ! -z "$UPLOAD_RELEASE_ASSET_URL" ]
 then
   echo "Uploading wheels as release assets"
   for FILE in /github/workspace/wheelhouse; do
