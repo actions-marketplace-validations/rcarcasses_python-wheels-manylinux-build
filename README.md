@@ -51,6 +51,7 @@ for a complete example that includes linting and uploading to PyPI.
 | `system-packages` | System (yum) packages required at build time, space-separated | optional | `''` | `'lrzip-devel zlib-devel'` |
 | `package-path` | Path to python package to build (e.g. where `setup.py` file is located), relative to repository root | optional | `''` | `'my_project'` |
 | `pip-wheel-args` | Extra extra arguments to pass to the `pip wheel` command (see [pip documentation](https://pip.pypa.io/en/stable/reference/pip_wheel/)) | optional | `'--no-deps'` | `'--no-deps --pre'` |
+| `upload-release-asset-url` | If specified, fixed wheels are uploaded to the release url specificed here. The url should be the output of a [`@actions/create-release`](https://www.github.com/actions/create-release) action. | optional | `''` | `''` |
 
 ### Output
 The action creates wheels in a new `wheelhouse` directory. Be sure to upload

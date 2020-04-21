@@ -7,6 +7,7 @@ BUILD_REQUIREMENTS=$2
 SYSTEM_PACKAGES=$3
 PACKAGE_PATH=$4
 PIP_WHEEL_ARGS=$5
+UPLOAD_RELEASE_ASSET_URL=$6
 
 if [ ! -z "$SYSTEM_PACKAGES" ]; then
     yum install -y ${SYSTEM_PACKAGES}  || { echo "Installing yum package(s) failed."; exit 1; }
@@ -22,7 +23,7 @@ for PY_VER in "${arrPY_VERSIONS[@]}"; do
     if [ ! -z "$BUILD_REQUIREMENTS" ]; then
         /opt/python/"${PY_VER}"/bin/pip install --no-cache-dir ${BUILD_REQUIREMENTS} || { echo "Installing requirements failed."; exit 1; }
     fi
-    
+
     # Build wheels
     /opt/python/"${PY_VER}"/bin/pip wheel /github/workspace/"${PACKAGE_PATH}" -w /github/workspace/wheelhouse/ ${PIP_WHEEL_ARGS} || { echo "Building wheels failed."; exit 1; }
 done
@@ -34,3 +35,18 @@ done
 
 echo "Succesfully build wheels:"
 ls /github/workspace/wheelhouse
+
+
+# If an upload release asset url has been specificed, upload the assets
+if [ -z "${UPLOAD_RELEASE_ASSET_URL}" ]
+then
+  echo "Uploading wheels as release assets"
+  for FILE in /github/workspace/wheelhouse; do
+    echo "Uploading $FILE"
+    curl \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      -H "Content-Type: $(file -b --mime-type $FILE)" \
+      --data-binary @$FILE \
+      "${UPLOAD_RELEASE_ASSET_URL}$(basename $FILE)"
+  done
+fi
