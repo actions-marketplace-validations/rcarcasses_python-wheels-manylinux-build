@@ -1,5 +1,5 @@
 # action.yml
-name: 'Python wheels manylinux build'
+name: 'Python wheels manylinux build with upload release assets'
 author: 'Ralf Gabriels'
 description: 'Build manylinux wheels for a (Cython) Python package'
 inputs:
